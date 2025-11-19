@@ -1,3 +1,6 @@
+*{
+  color: black;
+}
 #root {
   font-family: 'Inter', sans-serif;
   list-style: none;
