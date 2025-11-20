@@ -1,7 +1,9 @@
-import { Marker, Popup, LayersControl, ScaleControl } from "react-leaflet";
-import { lazy, useState } from "react";
+import { Marker, LayersControl, ScaleControl } from "react-leaflet";
+import { lazy, useState, useRef } from "react";
 import AdministrativeBoundariesToolTips from "./AdministrativeBoundariesToolTips";
-import {Button, CloseButton, Drawer, Portal } from "@chakra-ui/react";
+import { Button, CloseButton, Drawer, Portal } from "@chakra-ui/react";
+import { Icon } from "leaflet";
+import MapBoundsController from "./MapBoundsController";
 
 const MapContainer = lazy(() =>
   import("react-leaflet").then((module) => ({ default: module.MapContainer }))
@@ -38,9 +40,17 @@ export default function Map() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedMarker, setSelectedMarker] = useState(null);
 
+  const mapRef = useRef();
   const handleMarkerClick = (marker) => {
     setSelectedMarker(marker);
     setDrawerOpen(true);
+
+     if (mapRef.current) {
+      mapRef.current.setView(marker.position, 15, {
+        duration: 2,
+        easeLinearity: 0.25
+      });
+    }
   };
 
   const handleCloseDrawer = () => {
@@ -48,23 +58,33 @@ export default function Map() {
     setSelectedMarker(null);
   };
 
+  const customIcon = new Icon({
+    iconUrl: '../src/icons/Mavz.svg',
+    iconSize: [38, 38]
+  });
+
   return (
     <>
       <MapContainer
         attributionControl={false}
         style={{ height: "100%", width: "100%" }}
         center={[54.234047, 56.5518]}
+        bounds={[[58.200891, 68.253995], [50.079248, 43.234323]]}
         zoom={7}
+        ref={mapRef}
+        on
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <MapBoundsController />
         <AdministrativeBoundariesToolTips />
         <ScaleControl />
         <LayersControl position="topright">
           {markers.map((marker) => (
-            <LayersControl.Overlay checked name={marker.info}>
+            <LayersControl.Overlay key={marker.id} checked name={marker.info}>
               <Marker
                 key={marker.id}
                 position={marker.position}
+                icon={customIcon}
                 eventHandlers={{
                   click: () => {
                     handleMarkerClick(marker);

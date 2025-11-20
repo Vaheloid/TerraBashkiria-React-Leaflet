@@ -1,6 +1,6 @@
 import { Box, HStack, Center, Text} from '@chakra-ui/react';
 
-import Sidebar from './Sidebar';
+import Sidebar from '../menu/Sidebar';
 export default function Header() {
     return (
         <Box bg={"#7B83CE"} w="100%" p="3" color="white" shadow="lg" zIndex={1000}>

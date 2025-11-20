@@ -1,5 +1,5 @@
-import Map from './Map.jsx';
-import Header from './Header.jsx';
+import Map from './components/map/Map.jsx';
+import Header from './components/header/Header.jsx';
 import { Flex } from '@chakra-ui/react';
 import './index.css'
 
